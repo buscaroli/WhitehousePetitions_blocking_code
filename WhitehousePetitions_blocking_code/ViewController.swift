@@ -13,14 +13,30 @@ var petitions = [Petition]()
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
+        let urlString: String
         
-        // BLOCKING CODE? UI Will be Frozen while downloading data!
+        if navigationController?.tabBarItem.tag == 0 {
+            urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
+        } else {
+            urlString = "https://www.hackingwithswift.com/samples/petitions-2.json"
+        }
+        
+        
+        // BLOCKING CODE! UI Will be Frozen while downloading data!
         if let url = URL(string: urlString) {
             if let data = try? Data(contentsOf: url) {
                 parse(json: data)
+                return
+            } else {
+                showError()
             }
         }
+    }
+    
+    func showError() {
+        let ac = UIAlertController(title: "Loading Error", message: "There was a problem loading the feed. Try again later.", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        present(ac, animated: true)
     }
     
     func parse(json: Data) {
